@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brani della Playlist</title> 
+</head>
+<body>
+    <h1>Brani:</h1>
+    <table border="1">
+        <tr>
+            <th>Titolo</th>
+            <th>Artista</th>
+            <th>Album</th>
+        </tr>
+        {% for track in tracks %} 
+        <tr>
+            <td>{{ track['name'] }}</td>
+            <td>{{ track['artist'] }}</td>
+            <td>{{ track['album'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="{{ url_for('home') }}">Torna alla Home</a>
+</body>
+</html>
