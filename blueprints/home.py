@@ -1,23 +1,35 @@
-from flask import Blueprint, redirect, request, url_for, session
-from services.spotify_oauth import sp_oauth, get_spotify_object
+from flask import Blueprint, session, redirect, url_for, render_template
+import spotipy
 
-
-home_bp = Blueprint('home', __name__) #creiamo il blueprint
-
+home_bp = Blueprint('home', __name__)
 
 @home_bp.route('/home')
-def home():
-    token_info = session.get('token_info', None) #recupero token sissione (salvato prima)
+def homepage():
+    token_info = session.get('token_info')
     if not token_info:
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
-
-    sp = spotipy.Spotify(auth=token_info['access_token']) #usiamo il token per ottenere i dati del profilo
+    sp = spotipy.Spotify(auth=token_info['access_token'])
     user_info = sp.current_user()
-    playlists = sp.current_user_playlists() #sempre tramite il token sp preso prima
-    playlists_info = playlists['items'] #prendiamo solo la lista delle playlist
-    
-    
-    
-    print(user_info) #capiamo la struttura di user_info per usarle nel frontend
-    return render_template('home.html', user_info=user_info, playlists=playlists_info) #passo le info utente all'home.html
+    playlists = sp.current_user_playlists()['items']
+
+    return render_template('home.html', user_info=user_info, playlists=playlists)
+
+
+
+
+
+@home_bp.route('/playlist/<playlist_id>')
+def playlist_tracks(playlist_id):
+    token_info = session.get('token_info')
+    if not token_info:
+        return redirect(url_for('auth.login'))
+
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    playlist = sp.playlist_items(playlist_id, limit=100)
+
+    tracks = [{'name': item['track']['name'],
+               'artist': ', '.join([artist['name'] for artist in item['track']['artists']]),
+               'album': item['track']['album']['name']} for item in playlist['items']]
+
+    return render_template('playlist.html', tracks=tracks)

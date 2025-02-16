@@ -14,7 +14,7 @@
     <body>
         
         <div style="text-align: right;">
-            <a href="{{ url_for('logout') }}" style="color: blue; text-decoration: none; font-weight: bold;">Logout</a>
+            <a href="{{ url_for('auth.logout') }}" style="color: blue; text-decoration: none; font-weight: bold;">Logout</a>
         </div>
         
         
@@ -89,7 +89,7 @@
 
                                 <br>
 
-                                <a href="{{ url_for('playlist_tracks', playlist_id=playlist['id']) }}">Visualizza Brani</a>
+                                <a href="{{ url_for('home.playlist_tracks', playlist_id=playlist['id']) }}">Visualizza Brani</a>
 
 
 
